@@ -12,22 +12,25 @@
 import re
 import os
 import shutil
-import subprocess
+import zippath from subprocess
 import argparse
 import sys
 
 # This is to help coaches and graders identify student assignments
-__author__ = "Imraj423"
+__author__ = "???"
 
 
 def get_special_paths(dir):
-    result = []
+    path = []
     fnames = os.listdir(dir)
     for name in fnames:
         if re.match(r'.+\_\_\w+\_\_.+', name):
             print(name)
-            result.append(os.path.abspath(name))
-    return result
+            path.append(name)
+            # print(path)
+    return path
+# os.path.abspath('xyz_hello_.txt')
+# os.path.abspath('zz_something_.jpg')
 
 
 def copy_to(paths, dir):
@@ -37,14 +40,16 @@ def copy_to(paths, dir):
         shutil.copy(path, os.path.abspath(dir))
 
 
-def zip_to(files, zip_dir):
-    """given a list of paths, zip those files up into the given zipfile"""
-    cmd = ['zip', '-j', zip_dir]
-    cmd.extend(files)
-    print("Command I\'m running is: {}".format(" ".join(cmd)))
-    subprocess.call(cmd)
-    return 0
+def zip_to(paths, zippath):
+    cmd = 'zip -j {} '.format(zippath) + " ".join(paths)
+    (status, output) = commands.getstatusoutput(cmd)
+    if status:
+        sys.stderr.write(output)
+        sys.exit(status)
+    print output
 
+# +++your code here+++
+# Write functions and modify main() to call them
 
 def main():
     # This snippet will help you get started with the argparse module.
@@ -61,14 +66,23 @@ def main():
     todir = results.todir
     from_dir = results.from_dir
     tozip = results.tozip
-    result = get_special_paths(from_dir)
+    path = get_special_paths(from_dir)
     if todir:
-        copy_to(result, todir)
+        copy_to(spaths, todir)
     elif tozip:
-        zip_to(result, tozip)
+        zip_to(spaths, tozip)
     else:
-        print "\n".join(result)
+        print "\n".join(spaths)
+    # Read the docs and examples for the argparse module about how to do this.
+# wefwef
+    # Parsing command line arguments is a must-have skill.
+    # This is input data validation.  If something is wrong (or missing) with any
+    # required args, the general rule is to print a usage message and exit(1).
+
+    # +++your code here+++
+    # Call your functions
 
 
 if __name__ == "__main__":
     main()
+
